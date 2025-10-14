@@ -9,8 +9,9 @@
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['icon-192x192.png', 'icon-512x512.png'],
+        includeAssets: ['icon-192x192.png', 'icon-512x512.png', 'screenshot-wide.png', 'screenshot-narrow.png'],
         manifest: {
+          id: '/',
           name: 'Kyūdō Flashcard App',
           short_name: 'Kyūdō Cards',
           description: 'Application de cartes mémoire pour apprendre le vocabulaire du Kyūdō',
@@ -24,13 +25,29 @@
               src: '/icon-192x192.png',
               sizes: '192x192',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'maskable'
             },
             {
               src: '/icon-512x512.png',
               sizes: '512x512',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'any'
+            }
+          ],
+          screenshots: [
+            {
+              src: '/screenshot-wide.png',
+              sizes: '1280x720',
+              type: 'image/png',
+              form_factor: 'wide',
+              label: 'Vue principale de l\'application sur desktop'
+            },
+            {
+              src: '/screenshot-narrow.png',
+              sizes: '540x960',
+              type: 'image/png',
+              form_factor: 'narrow',
+              label: 'Vue principale de l\'application sur mobile'
             }
           ]
         },
