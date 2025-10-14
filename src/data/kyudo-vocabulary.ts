@@ -1,7 +1,6 @@
 import { FlashcardData } from '../types/flashcard';
 
 export const defaultKyudoVocabulary: Omit<FlashcardData, 'weight'>[] = [
- { id: '1', kanji: '弓道', romaji: 'Kyūdō', definition: 'La Voie de l\'arc - art martial japonais du tir à l\'arc', imageQuery: 'japanese archery' },
   { id: '2', kanji: '弓', romaji: 'Yumi', definition: 'Arc japonais traditionnel', imageQuery: 'japanese bow yumi' },
   { id: '3', kanji: '矢', romaji: 'Ya', definition: 'Flèche', imageQuery: 'japanese arrow' },
   { id: '4', kanji: '早矢', romaji: 'Haya', definition: 'Première flèche', imageQuery: 'kyudo first arrow' },

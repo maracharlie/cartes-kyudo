@@ -123,21 +123,24 @@ export function Flashcard({
                 <ImageWithFallback
                   src={imageUrl}
                   alt={card.romaji}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover opacity-40"
                 />
+
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/80" />
-              </div>
-              
-              {/* Content section - 40% */}
-              <div className="h-[40%] bg-white flex flex-col items-center justify-center p-6 text-center">
+
+                {/* Kanji overlay */}
                 <motion.div
-                  className="text-slate-800 text-5xl mb-3"
+                  className="absolute text-slate-800 text-5xl mb-3 inset-0 flex items-center justify-center text-slate-800 text-7xl font-bold z-10"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.2 }}
                 >
                   {card.kanji}
                 </motion.div>
+              </div>
+              
+              {/* Content section - 40% */}
+              <div className="h-[40%] bg-white flex flex-col items-center justify-center p-6 text-center">
                 <motion.div
                   className="text-sky-600 text-xl mb-4"
                   initial={{ y: 10, opacity: 0 }}
@@ -167,9 +170,10 @@ export function Flashcard({
                 <ImageWithFallback
                   src={imageUrl}
                   alt={card.romaji}
-                  className="w-full h-full object-cover opacity-40"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-sky-500/20 via-blue-500/20 to-white" />
+
               </div>
               
               {/* Content section - 40% */}

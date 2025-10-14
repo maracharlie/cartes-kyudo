@@ -136,115 +136,118 @@ export function CardEditor({ cards, isOpen, onClose, onUpdate }: CardEditorProps
               </div>
             </div>
 
-            {/* Form for editing/adding */}
-            {(editingId || isAdding) && (
-              <div className="p-6 border-b border-sky-100 bg-gradient-to-br from-sky-50 to-blue-50">
-                <h3 className="text-lg mb-4 text-sky-700">
-                  {isAdding ? 'Nouvelle carte' : 'Modifier la carte'}
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-sky-600 mb-2">
-                      Kanji *
-                    </label>
-                    <Input
-                      value={formData.kanji}
-                      onChange={(e) => setFormData({ ...formData, kanji: e.target.value })}
-                      placeholder="弓道"
-                      className="bg-white/60 border-sky-200 text-slate-800 focus:border-sky-400 focus:ring-sky-400/20"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-sky-600 mb-2">
-                      Romaji *
-                    </label>
-                    <Input
-                      value={formData.romaji}
-                      onChange={(e) => setFormData({ ...formData, romaji: e.target.value })}
-                      placeholder="Kyūdō"
-                      className="bg-white/60 border-sky-200 text-slate-800 focus:border-sky-400 focus:ring-sky-400/20"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-sky-600 mb-2">
-                      Définition *
-                    </label>
-                    <Textarea
-                      value={formData.definition}
-                      onChange={(e) => setFormData({ ...formData, definition: e.target.value })}
-                      placeholder="La Voie de l'arc"
-                      className="bg-white/60 border-sky-200 text-slate-800 min-h-20 focus:border-sky-400 focus:ring-sky-400/20"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-sky-600 mb-2">
-                      Recherche d'image
-                    </label>
-                    <Input
-                      value={formData.imageQuery}
-                      onChange={(e) => setFormData({ ...formData, imageQuery: e.target.value })}
-                      placeholder="japanese archery"
-                      className="bg-white/60 border-sky-200 text-slate-800 focus:border-sky-400 focus:ring-sky-400/20"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      onClick={handleSave} 
-                      className="bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      Enregistrer
-                    </Button>
-                    <Button
-                      onClick={handleCancel}
-                      className="bg-slate-200 hover:bg-slate-300 text-slate-700 shadow-sm hover:shadow-md transition-all duration-300"
-                    >
-                      Annuler
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Cards list */}
-            <ScrollArea className="flex-1 p-6">
-              <div className="space-y-3">
-                {cards.map((card, index) => (
-                  <motion.div
-                    key={card.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.02 }}
-                    className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/80 border border-sky-100/50 shadow-sm hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-baseline gap-2 mb-1">
-                          <span className="text-xl text-slate-800">{card.kanji}</span>
-                          <span className="text-sky-600">{card.romaji}</span>
-                        </div>
-                        <p className="text-sm text-slate-600">{card.definition}</p>
-                        <p className="text-xs text-slate-500 mt-2">
-                          Poids: {card.weight.toFixed(2)}
-                        </p>
+            {/* Scrollable content area */}
+            <ScrollArea className="flex-1 min-h-0">
+              <div className="pb-4">
+                {/* Form for editing/adding */}
+                {(editingId || isAdding) && (
+                  <div className="px-6 pt-6 pb-4 border-b border-sky-100 bg-gradient-to-br from-sky-50 to-blue-50 -mt-px">
+                    <h3 className="text-lg mb-4 text-sky-700">
+                      {isAdding ? 'Nouvelle carte' : 'Modifier la carte'}
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm text-sky-600 mb-2">
+                          Kanji *
+                        </label>
+                        <Input
+                          value={formData.kanji}
+                          onChange={(e) => setFormData({ ...formData, kanji: e.target.value })}
+                          placeholder="弓道"
+                          className="bg-white/60 border-sky-200 text-slate-800 focus:border-sky-400 focus:ring-sky-400/20"
+                        />
                       </div>
-                      <div className="flex gap-2 ml-4">
-                        <button
-                          onClick={() => handleEdit(card)}
-                          className="p-2 hover:bg-sky-100 rounded-xl transition-all duration-300 text-sky-600"
+                      <div>
+                        <label className="block text-sm text-sky-600 mb-2">
+                          Romaji *
+                        </label>
+                        <Input
+                          value={formData.romaji}
+                          onChange={(e) => setFormData({ ...formData, romaji: e.target.value })}
+                          placeholder="Kyūdō"
+                          className="bg-white/60 border-sky-200 text-slate-800 focus:border-sky-400 focus:ring-sky-400/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-sky-600 mb-2">
+                          Définition *
+                        </label>
+                        <Textarea
+                          value={formData.definition}
+                          onChange={(e) => setFormData({ ...formData, definition: e.target.value })}
+                          placeholder="La Voie de l'arc"
+                          className="bg-white/60 border-sky-200 text-slate-800 min-h-20 focus:border-sky-400 focus:ring-sky-400/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-sky-600 mb-2">
+                          Recherche d'image
+                        </label>
+                        <Input
+                          value={formData.imageQuery}
+                          onChange={(e) => setFormData({ ...formData, imageQuery: e.target.value })}
+                          placeholder="japanese archery"
+                          className="bg-white/60 border-sky-200 text-slate-800 focus:border-sky-400 focus:ring-sky-400/20"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleSave}
+                          className="bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
                         >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(card.id)}
-                          className="p-2 hover:bg-rose-100 rounded-xl transition-all duration-300 text-rose-600"
+                          <Save className="w-4 h-4 mr-2" />
+                          Enregistrer
+                        </Button>
+                        <Button
+                          onClick={handleCancel}
+                          className="bg-slate-200 hover:bg-slate-300 text-slate-700 shadow-sm hover:shadow-md transition-all duration-300"
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                          Annuler
+                        </Button>
                       </div>
                     </div>
-                  </motion.div>
-                ))}
+                  </div>
+                )}
+
+                {/* Cards list */}
+                <div className="px-6 pb-6 space-y-3" style={{ paddingTop: (editingId || isAdding) ? '0.5rem' : '1.5rem' }}>
+                  {cards.map((card, index) => (
+                    <motion.div
+                      key={card.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.02 }}
+                      className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/80 border border-sky-100/50 shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-baseline gap-2 mb-1">
+                            <span className="text-xl text-slate-800">{card.kanji}</span>
+                            <span className="text-sky-600">{card.romaji}</span>
+                          </div>
+                          <p className="text-sm text-slate-600">{card.definition}</p>
+                          <p className="text-xs text-slate-500 mt-2">
+                            Poids: {card.weight.toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="flex gap-2 ml-4">
+                          <button
+                            onClick={() => handleEdit(card)}
+                            className="p-2 hover:bg-sky-100 rounded-xl transition-all duration-300 text-sky-600"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(card.id)}
+                            className="p-2 hover:bg-rose-100 rounded-xl transition-all duration-300 text-rose-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </ScrollArea>
           </motion.div>
