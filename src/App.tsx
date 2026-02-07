@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BarChart3, RotateCcw, Edit3, Info, X } from 'lucide-react';
+import {
+  BarChart3,
+  RotateCcw,
+  Edit3,
+  Info,
+  X,
+  Target,
+  MapPin,
+  ListOrdered,
+  Sparkles,
+  Layers,
+  Menu
+} from 'lucide-react';
 import { Flashcard } from './components/Flashcard';
 import { StatsPanel } from './components/StatsPanel';
 import { CardEditor } from './components/CardEditor';
@@ -22,10 +34,58 @@ export default function App() {
     resetStats,
     reshuffleCards,
     updateCards,
+    setThemeFilter,
   } = useFlashcards();
+
+  // Theme categories: Tous, Équipement, Lieux, Étapes, Divers
+  const themeCategories = [
+    { id: 'all', label: 'Tous', themes: null },
+    { id: 'equipement', label: 'Équipement', themes: ['Équipement'] },
+    { id: 'lieux', label: 'Lieux', themes: ['Lieux'] },
+    { id: 'etapes', label: 'Étapes', themes: ['Étapes'] },
+    { id: 'divers', label: 'Divers', themes: ['Flèches', 'Position', 'Tenue', 'Cérémonie', 'Philosophie', 'Entraînement'] },
+  ];
+
+  // Theme icons mapping
+  const getThemeIcon = (categoryId: string) => {
+    switch (categoryId) {
+      case 'all': return <Layers className="w-5 h-5" />;
+      case 'equipement': return <Target className="w-5 h-5" />;
+      case 'lieux': return <MapPin className="w-5 h-5" />;
+      case 'etapes': return <ListOrdered className="w-5 h-5" />;
+      case 'divers': return <Sparkles className="w-5 h-5" />;
+      default: return <Layers className="w-5 h-5" />;
+    }
+  };
+
+  const getThemeColors = (categoryId: string) => {
+    switch (categoryId) {
+      case 'all': return { color: '#0284c7', bg: '#e0f2fe', ring: '#38bdf8' };
+      case 'equipement': return { color: '#d97706', bg: '#fef3c7', ring: '#fbbf24' };
+      case 'lieux': return { color: '#16a34a', bg: '#dcfce7', ring: '#4ade80' };
+      case 'etapes': return { color: '#2563eb', bg: '#dbeafe', ring: '#60a5fa' };
+      case 'divers': return { color: '#9333ea', bg: '#f3e8ff', ring: '#c084fc' };
+      default: return { color: '#0284c7', bg: '#e0f2fe', ring: '#38bdf8' };
+    }
+  };
+
+  // Track active category
+  const [activeCategory, setActiveCategory] = useState('all');
+
+  const handleCategorySelect = (categoryId: string, themes: string[] | null) => {
+    setActiveCategory(categoryId);
+    if (themes === null) {
+      setThemeFilter(null);
+    } else if (themes.length === 1) {
+      setThemeFilter(themes[0]);
+    } else {
+      setThemeFilter(themes);
+    }
+  };
 
   const [showStats, setShowStats] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   
   // Check if user has seen instructions before
   const [showInstructions, setShowInstructions] = useState(() => {
@@ -91,17 +151,73 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-white flex flex-col safe-area-inset">
       {/* Compact Mobile Header */}
-      <header className="px-6 pt-6 pb-4 flex items-center justify-center">
+      <header className="px-4 pt-6 pb-2">
+        <div className="flex items-center justify-between">
+          <div className="w-10" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="text-center"
+          >
+            <h1 className="text-slate-800 text-2xl bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent">
+              Kyūdō 弓道
+            </h1>
+            <p className="text-slate-500 text-xs mt-1">{currentIndex + 1}/{cards.length} cartes</p>
+          </motion.div>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowMenu(true)}
+            className="w-10 h-10 rounded-full bg-white/80 shadow-md flex items-center justify-center text-slate-600"
+          >
+            <Menu className="w-5 h-5" />
+          </motion.button>
+        </div>
+
+        {/* Theme Filter Icons */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-center"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{
+            marginTop: 6,
+            marginBottom: 0,
+            paddingTop: 12,
+            paddingBottom: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 24,
+          }}
         >
-          <h1 className="text-slate-800 text-2xl bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent">
-            Kyūdō 弓道
-          </h1>
-          <p className="text-slate-500 text-xs mt-1">{currentIndex + 1}/{cards.length} cartes</p>
+          {themeCategories.map((category) => {
+            const colors = getThemeColors(category.id);
+            const isSelected = activeCategory === category.id;
+            return (
+              <motion.button
+                key={category.id}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => handleCategorySelect(category.id, category.themes)}
+                style={{
+                  width: 40,
+                  height: 40,
+                  minWidth: 40,
+                  minHeight: 40,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: colors.bg,
+                  color: colors.color,
+                  opacity: isSelected ? 1 : 0.5,
+                  boxShadow: isSelected ? `0 0 0 2px white, 0 0 0 4px ${colors.ring}` : 'none',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {getThemeIcon(category.id)}
+              </motion.button>
+            );
+          })}
         </motion.div>
       </header>
 
@@ -143,7 +259,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Main content */}
-      <main className="flex-1 flex items-center justify-center px-4 pb-24">
+      <main className="flex-1 flex items-center justify-center px-4 pb-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentCard.id}
@@ -165,59 +281,81 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Bottom Navigation Bar (Mobile-style) */}
-      <motion.nav
-        initial={{ y: 100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
-        className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-sky-100 shadow-lg safe-area-inset-bottom"
-      >
-        <div className="flex items-center justify-around px-6 py-3">
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={handleReshuffle}
-            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-sky-50 active:bg-sky-100 transition-all duration-200"
-          >
-            <div className="w-10 h-10 rounded-full bg-sky-50 flex items-center justify-center">
-              <RotateCcw className="w-5 h-5 text-sky-600" />
-            </div>
-            <span className="text-xs text-slate-600 font-medium">Mélanger</span>
-          </motion.button>
+      {/* Drop-down Menu from top */}
+      <AnimatePresence>
+        {showMenu && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowMenu(false)}
+              className="fixed inset-0 bg-black/30 z-40"
+            />
+            <motion.div
+              initial={{ y: '-100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed top-0 left-0 right-0 bg-white shadow-2xl z-50 rounded-b-3xl safe-area-inset"
+            >
+              <div className="px-6 pt-6 pb-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-medium text-slate-800">Menu</h2>
+                  <button
+                    onClick={() => setShowMenu(false)}
+                    className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
 
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setShowStats(true)}
-            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-sky-50 active:bg-sky-100 transition-all duration-200"
-          >
-            <div className="w-10 h-10 rounded-full bg-sky-50 flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-sky-600" />
-            </div>
-            <span className="text-xs text-slate-600 font-medium">Stats</span>
-          </motion.button>
+                <div className="flex flex-row justify-around">
+                  <button
+                    onClick={() => { handleReshuffle(); setShowMenu(false); }}
+                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-sky-50 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
+                      <RotateCcw className="w-5 h-5 text-sky-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Mélanger</span>
+                  </button>
 
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setShowEditor(true)}
-            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-sky-50 active:bg-sky-100 transition-all duration-200"
-          >
-            <div className="w-10 h-10 rounded-full bg-sky-50 flex items-center justify-center">
-              <Edit3 className="w-5 h-5 text-sky-600" />
-            </div>
-            <span className="text-xs text-slate-600 font-medium">Gérer</span>
-          </motion.button>
+                  <button
+                    onClick={() => { setShowStats(true); setShowMenu(false); }}
+                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-sky-50 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
+                      <BarChart3 className="w-5 h-5 text-sky-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Stats</span>
+                  </button>
 
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setShowInstructions(true)}
-            className="flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-sky-50 active:bg-sky-100 transition-all duration-200"
-          >
-            <div className="w-10 h-10 rounded-full bg-sky-50 flex items-center justify-center">
-              <Info className="w-5 h-5 text-sky-600" />
-            </div>
-            <span className="text-xs text-slate-600 font-medium">Aide</span>
-          </motion.button>
-        </div>
-      </motion.nav>
+                  <button
+                    onClick={() => { setShowEditor(true); setShowMenu(false); }}
+                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-sky-50 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
+                      <Edit3 className="w-5 h-5 text-sky-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Gérer</span>
+                  </button>
+
+                  <button
+                    onClick={() => { setShowInstructions(true); setShowMenu(false); }}
+                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-sky-50 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
+                      <Info className="w-5 h-5 text-sky-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Aide</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Panels */}
       <StatsPanel

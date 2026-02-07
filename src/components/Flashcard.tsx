@@ -103,8 +103,8 @@ export function Flashcard({
         className="cursor-grab active:cursor-grabbing"
       >
         <motion.div
-          className="w-full h-[520px] relative"
-          style={{ perspective: '1000px' }}
+          className="w-full relative"
+          style={{ perspective: '1000px', height: 400 }}
           onClick={() => setIsFlipped(!isFlipped)}
         >
           <motion.div
@@ -118,8 +118,8 @@ export function Flashcard({
               className="absolute inset-0 bg-white rounded-3xl shadow-2xl overflow-hidden"
               style={{ backfaceVisibility: 'hidden' }}
             >
-              {/* Photo section - 60% */}
-              <div className="relative h-[60%] w-full overflow-hidden">
+              {/* Photo section - 40% */}
+              <div className="relative w-full overflow-hidden" style={{ height: '55%' }}>
                 <ImageWithFallback
                   src={imageUrl}
                   alt={card.romaji}
@@ -139,8 +139,8 @@ export function Flashcard({
                 </motion.div>
               </div>
               
-              {/* Content section - 40% */}
-              <div className="h-[40%] bg-white flex flex-col items-center justify-center p-6 text-center">
+              {/* Content section - 60% */}
+              <div className="bg-white flex flex-col items-center justify-center p-6 text-center" style={{ height: '45%' }}>
                 <motion.div
                   className="text-sky-600 text-xl mb-4"
                   initial={{ y: 10, opacity: 0 }}
@@ -165,8 +165,8 @@ export function Flashcard({
               className="absolute inset-0 bg-white rounded-3xl shadow-2xl overflow-hidden"
               style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
             >
-              {/* Photo section - 60% with overlay */}
-              <div className="relative h-[60%] w-full overflow-hidden">
+              {/* Photo section - 40% with overlay */}
+              <div className="relative w-full overflow-hidden" style={{ height: '40%' }}>
                 <ImageWithFallback
                   src={imageUrl}
                   alt={card.romaji}
@@ -176,8 +176,8 @@ export function Flashcard({
 
               </div>
               
-              {/* Content section - 40% */}
-              <div className="h-[40%] bg-white flex flex-col items-center justify-center px-8 py-6 text-center">
+              {/* Content section - 60% */}
+              <div className="bg-white flex flex-col items-center justify-center px-8 py-6 text-center" style={{ height: '60%' }}>
                 <div className="text-sky-600 text-base mb-3">{card.romaji}</div>
                 <div className="text-slate-700 text-lg leading-relaxed">
                   {card.definition}

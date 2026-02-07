@@ -5,6 +5,8 @@ export interface FlashcardData {
   definition: string;
   imageQuery: string;
   weight: number;
+  // Optional theme/category for filtering (e.g. "Équipement", "Étapes", "Lieux")
+  theme?: string;
 }
 
 export interface FlashcardStats {

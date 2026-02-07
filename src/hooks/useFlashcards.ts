@@ -7,12 +7,14 @@ const STORAGE_KEY_CARDS = 'kyudo-flashcards-cards';
 
 export function useFlashcards() {
   const [cards, setCards] = useState<FlashcardData[]>([]);
+  const [allCards, setAllCards] = useState<FlashcardData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stats, setStats] = useState<FlashcardStats>({
     reviewCount: 0,
     knownCount: 0,
     cardWeights: {},
   });
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
   // Initialize cards and stats from localStorage
   useEffect(() => {
@@ -25,6 +27,7 @@ export function useFlashcards() {
 
     if (savedCards) {
       const parsedCards = JSON.parse(savedCards);
+      setAllCards(parsedCards);
       setCards(parsedCards);
     } else {
       // Initialize with default vocabulary
@@ -32,6 +35,7 @@ export function useFlashcards() {
         ...card,
         weight: 1,
       }));
+      setAllCards(initialCards);
       setCards(shuffleCards(initialCards));
     }
   }, []);
@@ -45,10 +49,10 @@ export function useFlashcards() {
 
   // Save cards to localStorage
   useEffect(() => {
-    if (cards.length > 0) {
-      localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
+    if (allCards.length > 0) {
+      localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(allCards));
     }
-  }, [cards]);
+  }, [allCards]);
 
   // Weighted shuffle algorithm
   const shuffleCards = useCallback((cardsToShuffle: FlashcardData[]) => {
@@ -114,7 +118,7 @@ export function useFlashcards() {
 
   const resetStats = useCallback(() => {
     const resetWeights: Record<string, number> = {};
-    cards.forEach(card => {
+    allCards.forEach(card => {
       resetWeights[card.id] = 1;
     });
 
@@ -132,7 +136,7 @@ export function useFlashcards() {
     );
 
     localStorage.setItem(STORAGE_KEY_STATS, JSON.stringify(newStats));
-  }, [cards]);
+  }, [allCards]);
 
   const reshuffleCards = useCallback(() => {
     setCards(prevCards => shuffleCards(prevCards));
@@ -140,10 +144,35 @@ export function useFlashcards() {
   }, [shuffleCards]);
 
   const updateCards = useCallback((newCards: FlashcardData[]) => {
-    setCards(newCards);
+    setAllCards(newCards);
+    // Apply current theme filter if any
+    if (selectedTheme) {
+      const filtered = newCards.filter(c => c.theme === selectedTheme);
+      setCards(shuffleCards(filtered));
+    } else {
+      setCards(shuffleCards(newCards));
+    }
     setCurrentIndex(0);
     localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(newCards));
-  }, []);
+  }, [selectedTheme, shuffleCards]);
+
+  const availableThemes = Array.from(new Set(allCards.map(c => c.theme).filter(Boolean))) as string[];
+
+  const setThemeFilter = useCallback((theme: string | string[] | null) => {
+    if (!theme) {
+      setSelectedTheme(null);
+      setCards(shuffleCards(allCards));
+    } else if (Array.isArray(theme)) {
+      setSelectedTheme(theme[0]);
+      const filtered = allCards.filter(c => theme.includes(c.theme || ''));
+      setCards(shuffleCards(filtered));
+    } else {
+      setSelectedTheme(theme);
+      const filtered = allCards.filter(c => c.theme === theme);
+      setCards(shuffleCards(filtered));
+    }
+    setCurrentIndex(0);
+  }, [allCards, shuffleCards]);
 
   return {
     cards,
@@ -154,5 +183,8 @@ export function useFlashcards() {
     resetStats,
     reshuffleCards,
     updateCards,
+    availableThemes,
+    setThemeFilter,
+    selectedTheme,
   };
 }

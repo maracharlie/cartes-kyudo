@@ -201,3 +201,12 @@ html {
 body {
   overscroll-behavior-y: contain;
 }
+
+/* Hide scrollbar for theme filter */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
