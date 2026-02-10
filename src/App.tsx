@@ -137,12 +137,21 @@ export default function App() {
     });
   };
 
-  if (!currentCard) {
+  if (!currentCard && cards.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-white flex flex-col items-center justify-center p-4">
         <div className="text-slate-700 text-center">
-          <h2 className="text-3xl mb-4">Chargement...</h2>
-          <p className="text-slate-500">Préparation de vos flashcards</p>
+          <h2 className="text-2xl mb-4">Aucune carte trouvée</h2>
+          <p className="text-slate-500 mb-6">Cette catégorie ne contient pas de cartes</p>
+          <button
+            onClick={() => {
+              setActiveCategory('all');
+              setThemeFilter(null);
+            }}
+            className="px-6 py-3 bg-sky-500 text-white rounded-full"
+          >
+            Voir toutes les cartes
+          </button>
         </div>
       </div>
     );
